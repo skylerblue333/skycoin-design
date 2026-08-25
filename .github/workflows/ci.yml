@@ -2,21 +2,27 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, "product/**"]
   pull_request:
-    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
         with:
-          node-version: '18'
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm lint
-      - run: pnpm test
-      - run: pnpm build
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Package import smoke
+        run: node --input-type=module -e "import('./dist/index.js').then(m => { if (!m.normalizeDesignTokens) process.exit(1); })"
+      - run: npm audit --omit=dev --audit-level=high
