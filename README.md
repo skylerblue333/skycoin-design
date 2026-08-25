@@ -1,44 +1,46 @@
-<!-- PORTFOLIO PROJECT PROFILE: maintained by the repository owner -->
+# Sky Design Tokens
 
-## Project profile and code-audit snapshot
+A small TypeScript design-token validation and alias-resolution library for SKYCOIN4444 interfaces.
 
-**What this is:** **skycoin-design** is a public repository described as: “Design system and UI components #SkyCoin4444 #AI #Blockchain #DevOps #Innovation” Its dominant language signals are **TypeScript (8 files)**.
+**Status: engineering beta.** This repository does not claim a complete UI component system, design application, deployed theme service, or production design platform.
 
-**Why it has value:** Its value is best understood through the implementation evidence currently present in the repository: **27 tracked files** were observed in the shallow audit, with the source structure and existing documentation providing the project’s specific context. This README does not treat a prototype, experiment, or archive as a production system without supporting evidence.
+## Implemented behavior
 
-**Implementation evidence:** No test-related file was detected by filename heuristics.; 1 dependency or package manifest(s) detected; 3 build/CI/infrastructure signal(s) detected; and 3 documentation or governance file(s) detected. Test filenames observed include none detected. Dependency or package files include `package.json`. Build, CI, or infrastructure signals include `Dockerfile`, `docker-compose.yml`, `.github/workflows/ci.yml`.
+`resolveDesignTokens()` validates bounded token definitions, enforces lowercase dot/dash token names, rejects duplicate names and non-finite numbers, resolves exact aliases such as `{color.text}`, detects unknown aliases and cycles, and returns deterministic name ordering. `tokenMap()` converts resolved tokens to a plain value lookup.
 
-**Current status:** The repository is tracked on the `main` branch. The existing source tree, configuration, tests, workflows, and documentation remain authoritative for supported behavior and maturity. A code audit is not a production-readiness certification, and the presence of a test or workflow file does not establish that all checks pass.
+```ts
+import { resolveDesignTokens, tokenMap } from "skycoin4444-design-tokens";
 
-**Relationship to the wider portfolio:** This repository is one focused component of the broader Skyler Blue Spillers portfolio across AI, software engineering, cloud and DevOps, cybersecurity, blockchain, finance, education, social systems, and creative work. It may provide a service boundary, implementation pattern, experiment, archive, or reusable idea for related repositories. Treat repositories as technical dependencies only where documented interfaces and verified project requirements support that relationship.
+const tokens = resolveDesignTokens([
+  { name: "color.text", value: "#111827" },
+  { name: "color.heading", value: "{color.text}" },
+]);
 
-**Quality and security note:** No obvious secret-like pattern was detected by the limited static scan; this is not a substitute for a security audit. No TODO/FIXME marker was detected in the scanned text files.
+console.log(tokenMap(tokens));
+```
 
----
+## Verification
 
-# Skycoin Design
+```bash
+pnpm install
+pnpm typecheck
+pnpm test
+pnpm audit --audit-level=high
+pnpm pack
+```
 
-![GitHub stars](https://img.shields.io/github/stars/skylerblue333/skycoin-design?style=flat-square)
-![GitHub license](https://img.shields.io/github/license/skylerblue333/skycoin-design?style=flat-square)
+GitHub Actions performs real typecheck, tests, dependency audit, and package-smoke verification on Node.js 22. Previous scripts that only echoed successful verification were removed.
 
-## 🌟 Overview
-**skycoin-design** is a professional-grade project within the **SkyCoin4444** ecosystem. It focuses on delivering high-value solutions in the domain of **TypeScript**.
+There is intentionally no Docker/database/JWT runtime because this product is a reusable library.
 
-## 🚀 Key Features
-- **Scalable Architecture**: Designed for enterprise-level growth and performance.
-- **Modern Standards**: Implements best practices for clean code and maintainability.
-- **Robust Integration**: Built to work seamlessly within modern cloud-native environments.
+## Scope and limitations
 
-## 🛠️ Technology Stack
-- **Primary Domain**: TypeScript
-- **Ecosystem**: SkyCoin4444 Digital Platform
+Values are strings or finite numbers. Alias syntax resolves only a complete value that exactly matches `{token.name}`; interpolation, color parsing, unit conversion, theme inheritance, component rendering, CSS generation, Figma integration, accessibility auditing, persistence, and remote distribution are not implemented.
 
-## 📂 Structure
-The project is organized into a modular structure to ensure clarity and ease of development.
+Historical experiment files remain in the repository for history but are excluded from the supported package build.
 
-## 👨‍💻 Author
-**Skyler Blue Spillers**
-*Professional Chess Player & Software Engineer*
+SKYCOIN4444 frontends can consume the resolved map through a stable design-system adapter while component libraries and accessibility behavior remain separate concerns.
 
----
-*Powered by SkyCoin4444*
+## License
+
+MIT, subject to the checked-in license and applicable third-party licenses.

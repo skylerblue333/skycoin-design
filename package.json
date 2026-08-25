@@ -1,15 +1,22 @@
 {
-  "name": "skycoin4444-module",
-  "version": "1.0.0",
-  "description": "Production-grade SKYCOIN4444 module",
+  "name": "skycoin4444-design-tokens",
+  "version": "1.0.0-beta.1",
+  "description": "Validated design-token alias resolution primitives for SKYCOIN4444 interfaces",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "README.md", "SECURITY.md", "LICENSE"],
   "scripts": {
-    "build": "tsc || echo 'Build completed'",
-    "test": "echo 'Tests passing'",
-    "lint": "echo 'Linting passed'",
-    "start": "node dist/index.js"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "pnpm run build && node tests/tokens.test.js",
+    "audit": "pnpm audit --audit-level=high",
+    "prepack": "pnpm run build"
   },
-  "keywords": ["skycoin4444", "production"],
+  "engines": { "node": ">=20" },
+  "packageManager": "pnpm@10.15.1",
+  "keywords": ["skycoin4444", "design", "tokens", "theme"],
   "author": "SKYCOIN4444",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": { "typescript": "^5.9.3" }
 }
